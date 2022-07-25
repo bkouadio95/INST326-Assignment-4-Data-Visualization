@@ -1,0 +1,81 @@
+
+# Name: Betty Kouadio
+# Directory ID: bkouadio
+# Date: 2020-12-13
+# Assignment: hw4
+
+import  monty_hall
+
+import pandas as pd
+
+import seaborn as sns
+
+
+class Plot:
+    """ This class plots the winning  percentage
+    
+    Attributes:
+         doors(int): The amount of doors
+         
+         simulations(int): simulation instance
+    """
+
+    def __init__(self, doors, simulations):
+        """This method creates a list of dictionaries with data for each simulation
+
+        Args:
+            doors (int): The amount of doors
+            simulations (int): simulation instance
+            sequence(list): a list of dictionaries containing data for the plot .
+        """
+
+        self.doors = doors
+        self.simulations =simulations
+        self.sequence = []
+
+        i = 1
+
+        while i <= simulations:
+
+            data = {"iterations": None, "percentage": None, "doors": None, "switched": None}
+
+
+            if i % 2 == 0:
+
+                game_simulation = monty_hall.Simulation(self.doors)
+                percentage = game_simulation.play_game(True, i)  
+                data ["iterations"]= i
+                data["percentage"] = percentage
+                data["doors"] = self.doors
+                data["switched"] = True 
+
+            elif i % 2 != 0:
+
+                game_simulation = monty_hall.Simulation(self.doors)
+                percentage = game_simulation.play_game(False, i)
+
+                data ["iterations"] = i
+                data["percentage"] = percentage
+                data["doors"] = self.doors
+                data["switched"] = False
+
+            self.sequence.append(data)
+
+            i+=1    
+
+        self.make_plot(self.sequence)  
+
+    def make_plot(self, sequence):
+        """ This method hold a plot of the win percentage 
+
+        Args:
+            sequence (list): list of dictionary 
+        """
+        df = pd.DataFrame(sequence)
+
+        game_plot = sns.lmplot(x= "iterations", y="percentage", data = df, hue = "switched")
+        game_plot.savefig(f"monty_hall{self.simulations}{self.doors}.png")
+
+if __name__ == "__main__":
+
+    sample_plot = Plot(5, 100)
