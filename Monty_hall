@@ -1,0 +1,80 @@
+# Name: Betty Kouadio
+# Directory ID: bkouadio
+# Date: 2020-12-13
+# Assignment: hw4
+
+import random
+
+
+class Simulation:
+    """ This class creates a simulation of the monty hall game  which uses zonk and  car
+    """
+    def __init__(self, doors ):
+        """ this function sets doors and creates a contains  the number of doors definitively 
+
+        Args:
+            doors (int): number of doors
+            door_container (int): stored the number of doors  that has been created
+        """
+        self.doors = doors
+        self.door_container = doors
+
+    def set_doors(self):
+        """ This function creates a list of zonk that is the same size as 
+            the number of doors and replaces  one  of  them randomly by car
+        """
+        self.list_of_doors= [] 
+        self.doors = self.door_container
+
+
+        while self.doors > 0:
+            self.list_of_doors.append("zonk") 
+            self.doors -= 1
+
+        random_zonk = random.randint(0,self.door_container-1)
+        self.list_of_doors[random_zonk] = "car"
+        self.pick = self.list_of_doors.pop(self.list_of_doors.index((random.choice(self.list_of_doors))))
+
+        total  = 0
+
+        for item in self.list_of_doors:
+            if item == "zonk" and total  == 0:
+                self.remove = self.list_of_doors.pop(self.list_of_doors.index(item))
+                total  = 1
+            else:
+                continue 
+
+        self.alt_door= random.choice(self.list_of_doors)
+
+
+    def play_game(self, switch = False, iterations = 1 ):
+        """This method return the percentage of the amount of times that the game was won .
+
+        Args:
+            switch (bool): if the play want to change is door. Defaults to False.
+            iterations (int): the amount of times the game will be played. Defaults to 1.
+
+        Returns:
+             the winning  percentage.
+        """
+
+        check = 0
+        win_number = 0
+
+        while check < iterations:
+            self.set_doors()
+            if  switch == True and self.pick == "zonk":
+                win_number +=1
+            elif  switch == False and self.pick == "car":
+                win_number += 1
+
+            check +=1
+
+        win_percentage = (win_number / iterations)
+        return win_percentage 
+
+
+if __name__ == "__main__":
+
+    game_door = Simulation(3)
+    print(game_door.play_game(False, 100))
